@@ -1,177 +1,140 @@
 **IMPORTANT FOR CLAUDE: Reference this file before implementing anything**
 
-# Project: Travel Planning Application
+# Project: Travel Planning Application [CL]
 
-## Project Overview
+## Project Overview [CL-OVW]
+Django web app for trip planning with itinerary management and weather integration.
+- See [FUNCTIONAL.md] for detailed feature requirements
+- See [ARCHITECTURE.md] for technical implementation details
 
-The Travel Planning Application is a web-based tool built with Django that allows users to create, manage, and organize their trips. Users can plan itineraries, add activities, and check weather conditions for their destinations.
+## Tech Stack [CL-TECH]
+- Language: Python 3.8+ [CL-TECH-LANG]
+- Framework: Django 4.2+ [CL-TECH-FRAME]
+- Database: PostgreSQL [CL-TECH-DB]
+- Frontend: Django Templates with CSS/JS [CL-TECH-FRONT]
+- Libraries: DRF, Requests, Pillow [CL-TECH-LIB]
+- Package Manager: pip [CL-TECH-PKG]
 
-Key features include:
-1. Trip management (creation, editing, deletion)
-2. Itinerary planning with activities
-3. Weather checking for destinations
+## Code Style & Conventions [CL-STYLE]
 
-## Tech Stack
+### Import/Module Standards [CL-STYLE-IMP]
+```python
+# 1. Standard library imports
+import datetime
+import uuid
 
-- Languages: Python 3.8+
-- Frameworks: Django 4.2+
-- Database: PostgreSQL
-- Frontend: Django Templates with basic CSS and JavaScript enhancements
-- Libraries: Django Rest Framework, Requests (for API calls), Pillow (for image handling)
-- Package Manager: pip
+# 2. Django imports
+from django.db import models
+from django.shortcuts import render
 
-## Code Style & Conventions
+# 3. Third-party app imports
+import requests
+from PIL import Image
 
-### Import/Module Standards
+# 4. Local app imports
+from trips.models import Trip
+from weather.services import get_weather
+```
 
-- Group imports in the following order:
-  1. Standard library imports
-  2. Django imports
-  3. Third-party app imports
-  4. Local app imports
-- Use absolute imports for clarity
-- Alphabetize imports within each group
+### Naming Conventions [CL-STYLE-NAME]
+- Functions: `snake_case()` (create_trip, get_weather)
+- Classes/Models: `CamelCase` (Trip, Activity)
+- Constants: `UPPER_CASE_WITH_UNDERSCORES` (API_KEY)
+- Files: `snake_case.py` (models.py, trip_views.py)
+- Templates: `app_name/model_action.html` (trips/trip_detail.html)
+- URL patterns: `snake_case-descriptive-names` (trip-detail)
 
-### Naming Conventions
+### Patterns to Follow [CL-STYLE-PAT]
+- Use Django's MTV pattern (ARCH-SYS-PAT)
+- Use class-based views for complex functionality
+- Create form classes for all data input and validation
+- Implement service pattern for external API calls (weather)
+- Follow OOP principles:
+  - Encapsulation: Keep data and methods together
+  - Single Responsibility: One class = one responsibility
+  - Composition over inheritance: Prefer composing objects
 
-- Functions: snake_case (create_trip, get_weather)
-- Classes/Models: CamelCase singular nouns (Trip, Activity)
-- Constants: UPPER_CASE_WITH_UNDERSCORES
-- Files: snake_case (models.py, trip_views.py)
-- Templates: app_name/model_action.html (trips/trip_detail.html)
-- URL patterns: snake_case descriptive names
-
-### Patterns to Follow
-
-- Model-Template-View (MTV) Django pattern
-- Class-based views for complex functionality
-- Form classes for input validation
-- Service pattern for external API calls (weather)
-- Object-Oriented Programming principles:
-  - Encapsulation
-  - Single Responsibility
-  - Composition over inheritance
-
-## Development Workflow
-
-- Branch strategy: Feature Branch Workflow
-  - Create branches for each feature/fix (e.g., "feature/trip-creation", "fix/weather-api")
-- Commit message format: Conventional Commits
-  - feat: A new feature
-  - fix: A bug fix
-  - docs: Documentation changes
-  - style: Code style changes
-  - refactor: Code changes that neither fix bugs nor add features
-  - test: Adding or modifying tests
-  - chore: Changes to build process or auxiliary tools
-- PR requirements:
+## Development Workflow [CL-DEV]
+- Branch naming: `feature/trip-creation`, `fix/weather-api` [CL-DEV-BRANCH]
+- Commit format: [CL-DEV-COMMIT]
+  ```
+  feat: Add trip creation form
+  fix: Handle weather API errors
+  docs: Update README with setup instructions
+  style: Format code according to PEP 8
+  refactor: Simplify weather data caching
+  test: Add tests for trip model validation
+  chore: Update dependencies
+  ```
+- Pull Request requirements: [CL-DEV-PR]
   - All tests passing
   - Code follows style guidelines
   - Documentation updated
 
-## Testing Strategy
+## Testing [CL-TEST]
+- Use Django's TestCase for all testing [CL-TEST-FRAME]
+- Test naming convention: `test_should_<description>_when_<condition>` [CL-TEST-NAME]
+- Required test coverage: All model methods, form validation, views [CL-TEST-COV]
 
-- Test frameworks: Django's built-in TestCase
-- Coverage requirements: Core functionality must have tests
-- Test naming conventions: test_should_description_when_condition
+## Environment Setup [CL-ENV]
+Required variables in `.env` file: [CL-ENV-VARS]
+```
+DATABASE_URL=postgresql://username:password@localhost:5432/travelapp
+SECRET_KEY=your_secret_key
+WEATHER_API_KEY=your_weather_api_key
+```
 
-## Environment Setup
-
-- Required environment variables:
-  - DATABASE_URL
-  - SECRET_KEY
-  - WEATHER_API_KEY
-- Setup commands: See Common Commands section
-- Local development server: Django development server
-
-## Common Commands
-
+## Common Commands [CL-CMD]
 ```bash
-# Create virtual environment
+# Create/activate virtual environment
 python -m venv venv
-
-# Activate virtual environment (Windows)
-venv\Scripts\activate
-
-# Activate virtual environment (macOS/Linux)
-source venv/bin/activate
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Run migrations
+# Database operations
 python manage.py makemigrations
 python manage.py migrate
 
-# Create superuser
-python manage.py createsuperuser
-
-# Run development server
+# Run server
 python manage.py runserver
 
-# Run tests
+# Testing
 python manage.py test
 ```
 
-## Project Structure
+## Project Structure [CL-STRUCT]
+See [ARCHITECTURE.md#project-structure] for detailed layout.
 
-Key directories and their purpose:
+## Review Checklist [CL-REVIEW]
+Before submitting code, verify: [CL-REVIEW-CHECK]
+1. Run `python manage.py check` and `python manage.py test`
+2. Ensure code follows PEP 8 and Django style
+3. Verify naming conventions are followed
+4. Confirm code follows MTV pattern and OOP principles
+5. Check proper error handling is implemented
+6. Verify tests cover key functionality
+7. Ensure docstrings document all classes/functions
 
-- `/travel_project/` - Main project settings
-- `/trips/` - Trip management app
-- `/itineraries/` - Itinerary planning app
-- `/weather/` - Weather integration app
-- `/templates/` - Project-wide templates
-- `/docs/` - Project documentation
+## Error Handling [CL-ERR]
+- Use Django's error pages for HTTP errors [CL-ERR-HTTP]
+- Implement try-except for external operations: [CL-ERR-TRY]
+  ```python
+  def get_weather(location):
+      try:
+          response = requests.get(f"{API_URL}?location={location}&key={API_KEY}")
+          response.raise_for_status()
+          return response.json()
+      except requests.RequestException as e:
+          logger.error(f"Weather API error: {e}")
+          return None
+  ```
+- Log all errors appropriately [CL-ERR-LOG]
+- Show user-friendly messages [CL-ERR-MSG]
 
-## Review Process Guidelines
-
-Before submitting any code, ensure the following steps are completed:
-
-1. **Run all lint, check and test commands**
-   - `python manage.py check`
-   - `python manage.py test`
-
-2. **Review outputs and iterate until all issues are resolved**
-
-3. **Assess compliance**:
-   For each standard, explicitly state ✅ or ❌ and explain why:
-
-   - Code style and formatting: Does the code follow PEP 8 and Django style?
-   - Naming conventions: Do names follow our conventions?
-   - Architecture patterns: Does code follow MTV pattern and OOP principles?
-   - Error handling: Are errors properly caught and handled?
-   - Test coverage: Are key functions tested?
-   - Documentation: Are docstrings and comments added where needed?
-
-4. **Self-review checklist**:
-   - [ ] Code follows defined patterns
-   - [ ] No debug/commented code
-   - [ ] Error handling implemented
-   - [ ] Tests written and passing
-   - [ ] Documentation updated
-
-## Development Principles
-
-- **KISS (Keep It Simple, Stupid)**: Prefer simple solutions over complex ones
-- **DRY (Don't Repeat Yourself)**: Avoid code duplication
-- **Convention over Configuration**: Follow Django conventions when possible
-
-## Error Handling
-
-- Use Django's built-in error handling for HTTP errors
-- Implement try-except blocks for operations that might fail (API calls, etc.)
-- Display user-friendly error messages
-- Log errors appropriately
-
-## Known Issues & Workarounds
-
-- Weather API integration requires an API key
-- PostgreSQL must be installed and configured locally for development
-
-## References
-
-- [Django Documentation](https://docs.djangoproject.com/)
-- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
-- Functional Specification: `/docs/FUNCTIONAL_SPEC.md`
-- Architectural Specification: `/docs/ARCHITECTURAL_SPEC.md`
+## Development Principles [CL-PRIN]
+- **KISS**: Choose simplest implementation that meets requirements [CL-PRIN-KISS]
+- **DRY**: Extract repeated code into functions/utilities [CL-PRIN-DRY]
+- **Convention over Configuration**: Follow Django conventions [CL-PRIN-CON]

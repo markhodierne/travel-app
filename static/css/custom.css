@@ -1,0 +1,90 @@
+/* Custom CSS for Travel Planner */
+
+/* General styling */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+/* Card hover effects */
+.card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Custom trip card styles */
+.trip-card-image {
+    height: 180px;
+    object-fit: cover;
+}
+
+.trip-placeholder {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    color: #6c757d;
+}
+
+/* Custom button styles */
+.btn-primary {
+    background-color: #4285F4;
+    border-color: #4285F4;
+}
+
+.btn-primary:hover {
+    background-color: #3367d6;
+    border-color: #3367d6;
+}
+
+/* Breadcrumb styling */
+.breadcrumb {
+    background-color: transparent;
+    padding: 0.5rem 0;
+}
+
+/* Form styling */
+.asteriskField {
+    color: #dc3545;
+    margin-left: 4px;
+}
+
+/* Responsive fixes */
+@media (max-width: 768px) {
+    .card-footer .d-flex {
+        flex-direction: column;
+    }
+    
+    .card-footer .btn-group {
+        margin-top: 0.5rem;
+    }
+}
+
+/* Error message styling */
+.errorlist {
+    color: #dc3545;
+    list-style: none;
+    padding-left: 0;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Custom navbar styling */
+.navbar-brand {
+    font-weight: 500;
+}
+
+/* Footer styling */
+footer {
+    margin-top: auto;
+}

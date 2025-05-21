@@ -1,0 +1,167 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ trip.name }} - Travel Planner{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'trip-list' %}">My Trips</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ trip.name }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h1 class="card-title h2">{{ trip.name }}</h1>
+                <h6 class="card-subtitle mb-3 text-muted">{{ trip.destination }}</h6>
+                
+                <div class="d-flex align-items-center mb-3">
+                    <div class="text-muted me-4">
+                        <i class="bi bi-calendar-event"></i>
+                        {{ trip.start_date|date:"M d, Y" }} - {{ trip.end_date|date:"M d, Y" }}
+                    </div>
+                    <div class="text-muted">
+                        <i class="bi bi-clock"></i>
+                        {{ trip.duration }} day{% if trip.duration != 1 %}s{% endif %}
+                    </div>
+                </div>
+                
+                {% if trip.description %}
+                    <h5 class="mt-4">About this trip</h5>
+                    <p class="card-text">{{ trip.description|linebreaks }}</p>
+                {% endif %}
+                
+                <div class="mt-4 d-flex">
+                    <a href="{% url 'trip-update' trip.pk %}" class="btn btn-primary me-2">Edit Trip</a>
+                    <a href="{% url 'trip-delete' trip.pk %}" class="btn btn-danger">Delete Trip</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Activities section -->
+        <div class="card">
+            <div class="card-header bg-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0">Itinerary</h2>
+                    <div>
+                        <a href="{% url 'activity-list' trip.pk %}" class="btn btn-sm btn-outline-secondary me-2">
+                            View All
+                        </a>
+                        <a href="{% url 'activity-create' trip.pk %}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-plus-circle"></i> Add Activity
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                {% if trip.activities.exists %}
+                    <div class="list-group list-group-flush">
+                        {% for activity in trip.activities.all %}
+                            <a href="{% url 'activity-detail' activity.pk %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="d-flex align-items-center">
+                                            {% with activity_type=activity.activity_type %}
+                                                {% if activity_type == 'transportation' %}
+                                                    <i class="bi bi-airplane me-2 text-primary"></i>
+                                                {% elif activity_type == 'accommodation' %}
+                                                    <i class="bi bi-house-door me-2 text-success"></i>
+                                                {% elif activity_type == 'sightseeing' %}
+                                                    <i class="bi bi-binoculars me-2 text-info"></i>
+                                                {% elif activity_type == 'food' %}
+                                                    <i class="bi bi-cup-hot me-2 text-danger"></i>
+                                                {% elif activity_type == 'entertainment' %}
+                                                    <i class="bi bi-music-note-beamed me-2 text-warning"></i>
+                                                {% else %}
+                                                    <i class="bi bi-calendar-event me-2 text-secondary"></i>
+                                                {% endif %}
+                                            {% endwith %}
+                                            <h5 class="mb-1">{{ activity.name }}</h5>
+                                        </div>
+                                        <p class="mb-1 text-muted">{{ activity.location }}</p>
+                                    </div>
+                                    <div class="text-muted text-end">
+                                        <div>{{ activity.date_time|date:"M d, Y" }}</div>
+                                        <div>{{ activity.date_time|time:"g:i A" }}</div>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center text-muted py-5">
+                        <i class="bi bi-calendar3 d-block mb-2" style="font-size: 2rem;"></i>
+                        <p class="mb-2">No activities have been added to this trip yet.</p>
+                        <a href="{% url 'activity-create' trip.pk %}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-plus-circle"></i> Add Activity
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            {% if trip.cover_image %}
+                <img src="{{ trip.cover_image.url }}" class="card-img-top" alt="{{ trip.name }}">
+            {% else %}
+                <div class="bg-light text-center p-5">
+                    <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Weather information -->
+        <div class="card">
+            <div class="card-header bg-white">
+                <h2 class="h5 mb-0">Weather in {{ trip.destination }}</h2>
+            </div>
+            <div class="card-body">
+                {% load weather_tags %}
+                
+                {% if weather_error %}
+                    <div class="alert alert-warning" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Unable to retrieve weather data at this time. Please try again later.
+                    </div>
+                {% elif weather %}
+                    <!-- Current Weather -->
+                    <div class="text-center mb-4">
+                        <i class="{{ weather.conditions|weather_icon }} {{ weather.conditions|weather_color }}" style="font-size: 3rem;"></i>
+                        <h3 class="h5 mt-2">{{ weather.temperature }}°C</h3>
+                        <p class="mb-0">{{ weather.conditions }}</p>
+                        <p class="text-muted small">Last updated: {{ weather.retrieved_at|date:"M d, Y H:i" }}</p>
+                    </div>
+                    
+                    <!-- Forecast -->
+                    {% if forecast %}
+                        <h4 class="h6 mb-3">5-Day Forecast</h4>
+                        <div class="row">
+                            {% for day in forecast %}
+                                <div class="col text-center">
+                                    <div class="small">{{ day.date|slice:"5:" }}</div>
+                                    <i class="{{ day.condition|weather_icon }} {{ day.condition|weather_color }} my-2" style="font-size: 1.5rem;"></i>
+                                    <div class="fw-bold">{{ day.temperature }}°C</div>
+                                    <div class="small text-muted">{{ day.condition }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <p class="text-center text-muted py-3">
+                        <i class="bi bi-cloud-sun d-block mb-2" style="font-size: 2rem;"></i>
+                        No weather data available for {{ trip.destination }}.
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ title }} - Travel Planner{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'trip-list' %}">My Trips</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'trip-detail' trip.pk %}">{{ trip.name }}</a></li>
+                {% if activity.pk %}
+                    <li class="breadcrumb-item"><a href="{% url 'activity-list' trip.pk %}">Activities</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'activity-detail' activity.pk %}">{{ activity.name }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit</li>
+                {% else %}
+                    <li class="breadcrumb-item"><a href="{% url 'activity-list' trip.pk %}">Activities</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add Activity</li>
+                {% endif %}
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h1 class="h3 mb-0">{{ title }}</h1>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">Activity Name <span class="text-danger">*</span></label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="text-danger mt-1 small">
+                                {% for error in form.name.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.date_time.id_for_label }}" class="form-label">Date & Time <span class="text-danger">*</span></label>
+                        {{ form.date_time }}
+                        {% if form.date_time.errors %}
+                            <div class="text-danger mt-1 small">
+                                {% for error in form.date_time.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-muted small mt-1">
+                                Must be within trip dates: {{ trip.start_date|date:"M d, Y" }} - {{ trip.end_date|date:"M d, Y" }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.location.id_for_label }}" class="form-label">Location <span class="text-danger">*</span></label>
+                        {{ form.location }}
+                        {% if form.location.errors %}
+                            <div class="text-danger mt-1 small">
+                                {% for error in form.location.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.activity_type.id_for_label }}" class="form-label">Activity Type</label>
+                        {{ form.activity_type }}
+                        {% if form.activity_type.errors %}
+                            <div class="text-danger mt-1 small">
+                                {% for error in form.activity_type.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger mt-1 small">
+                                {% for error in form.description.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-flex mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            {% if activity.pk %}
+                                Update Activity
+                            {% else %}
+                                Add Activity
+                            {% endif %}
+                        </button>
+                        {% if activity.pk %}
+                            <a href="{% url 'activity-detail' activity.pk %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+                        {% else %}
+                            <a href="{% url 'activity-list' trip.pk %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Trip Information</h5>
+            </div>
+            <div class="card-body">
+                <h6>{{ trip.name }}</h6>
+                <div class="text-muted mb-2">
+                    <i class="bi bi-geo-alt"></i> {{ trip.destination }}
+                </div>
+                <div class="text-muted mb-3">
+                    <i class="bi bi-calendar-event"></i> 
+                    {{ trip.start_date|date:"M d, Y" }} - {{ trip.end_date|date:"M d, Y" }}
+                </div>
+                <a href="{% url 'trip-detail' trip.pk %}" class="btn btn-outline-primary btn-sm">
+                    View Trip Details
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

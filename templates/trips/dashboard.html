@@ -1,0 +1,210 @@
+{% extends 'base/base.html' %}
+{% load weather_tags %}
+
+{% block title %}Dashboard - Travel Planner{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5 mb-3">Welcome to Your Travel Dashboard</h1>
+            <p class="lead">Plan, organize, and visualize your travel experiences</p>
+            <a href="{% url 'trip-create' %}" class="btn btn-primary btn-lg mt-2">
+                <i class="bi bi-plus-circle me-2"></i> Plan a New Trip
+            </a>
+        </div>
+    </div>
+    
+    <!-- Active Trips Section -->
+    {% if ongoing_trips %}
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h2 class="h4 mb-0"><i class="bi bi-airplane-fill me-2"></i> Your Active Trips</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row row-cols-1 row-cols-md-2 g-4">
+                        {% for trip in ongoing_trips %}
+                            <div class="col">
+                                <div class="card h-100 shadow-sm border-success">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ trip.name }}</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">{{ trip.destination }}</h6>
+                                        <p class="card-text">
+                                            <i class="bi bi-calendar me-2"></i> Currently ongoing
+                                            <br>
+                                            <small class="text-muted">{{ trip.start_date|date:"M d, Y" }} - {{ trip.end_date|date:"M d, Y" }}</small>
+                                            <br>
+                                            <small class="text-muted">{{ trip.duration }} day{% if trip.duration != 1 %}s{% endif %}</small>
+                                        </p>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-success">
+                                        <a href="{% url 'trip-detail' trip.id %}" class="btn btn-outline-success btn-sm">
+                                            <i class="bi bi-eye me-1"></i> View Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Upcoming Trips Section -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h4 mb-0"><i class="bi bi-calendar-event me-2"></i> Upcoming Trips</h2>
+                </div>
+                <div class="card-body">
+                    {% if upcoming_trips %}
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                            {% for trip in upcoming_trips %}
+                                <div class="col">
+                                    <div class="card h-100 shadow-sm">
+                                        {% if trip.cover_image %}
+                                            <img src="{{ trip.cover_image.url }}" class="card-img-top" alt="{{ trip.name }}" style="height: 120px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="card-img-top bg-light text-center py-4" style="height: 120px;">
+                                                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ trip.name }}</h5>
+                                            <h6 class="card-subtitle mb-2 text-muted">{{ trip.destination }}</h6>
+                                            <p class="card-text">
+                                                <i class="bi bi-calendar me-2"></i> {{ trip.start_date|date:"M d, Y" }} - {{ trip.end_date|date:"M d, Y" }}
+                                                <br>
+                                                <small class="text-muted">{{ trip.duration }} day{% if trip.duration != 1 %}s{% endif %}</small>
+                                                <br>
+                                                <small class="text-muted">Starts in {{ trip.start_date|timeuntil }}</small>
+                                            </p>
+                                        </div>
+                                        <div class="card-footer bg-transparent">
+                                            <a href="{% url 'trip-detail' trip.id %}" class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-eye me-1"></i> View Details
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i> You don't have any upcoming trips.
+                            <a href="{% url 'trip-create' %}" class="alert-link">Plan a new trip</a> to get started.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Weather Section -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h2 class="h4 mb-0"><i class="bi bi-cloud-sun me-2"></i> Destination Weather</h2>
+                </div>
+                <div class="card-body">
+                    {% if destinations_weather %}
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                            {% for destination in destinations_weather %}
+                                <div class="col">
+                                    <div class="card h-100 shadow-sm">
+                                        <div class="card-header">
+                                            <h5 class="card-title mb-0">{{ destination.destination }}</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% with weather=destination.weather %}
+                                                <div class="current-weather text-center mb-3">
+                                                    <i class="bi {{ weather.conditions|weather_icon }} {{ weather.conditions|weather_color }}" style="font-size: 3rem;"></i>
+                                                    <h2 class="mt-2">{{ weather.temperature }}°C</h2>
+                                                    <p class="text-muted">{{ weather.conditions }}</p>
+                                                </div>
+                                                
+                                                {% with forecast=destination.forecast %}
+                                                    {% if forecast %}
+                                                        <div class="forecast">
+                                                            <h6 class="text-muted mb-3">5-Day Forecast</h6>
+                                                            <div class="row g-2">
+                                                                {% for day in forecast %}
+                                                                    <div class="col">
+                                                                        <div class="forecast-day text-center small p-2 rounded bg-light">
+                                                                            <div class="fw-bold">{{ day.date|slice:"5:" }}</div>
+                                                                            <i class="bi {{ day.condition|weather_icon }} {{ day.condition|weather_color }} my-2" style="font-size: 1.2rem;"></i>
+                                                                            <div>{{ day.temperature }}°C</div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% endwith %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i> No weather data is available for your trip destinations.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col">
+            <div class="card border-secondary">
+                <div class="card-header bg-secondary text-white">
+                    <h2 class="h4 mb-0"><i class="bi bi-lightning-charge me-2"></i> Quick Actions</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6 col-md-3">
+                            <a href="{% url 'trip-create' %}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column justify-content-center align-items-center p-4">
+                                <i class="bi bi-plus-circle mb-2" style="font-size: 2rem;"></i>
+                                <span>New Trip</span>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="{% url 'trip-list' %}" class="btn btn-outline-secondary w-100 h-100 d-flex flex-column justify-content-center align-items-center p-4">
+                                <i class="bi bi-globe mb-2" style="font-size: 2rem;"></i>
+                                <span>All Trips</span>
+                            </a>
+                        </div>
+                        {% if ongoing_trips.first %}
+                            <div class="col-6 col-md-3">
+                                <a href="{% url 'trip-detail' ongoing_trips.first.id %}" class="btn btn-outline-success w-100 h-100 d-flex flex-column justify-content-center align-items-center p-4">
+                                    <i class="bi bi-airplane mb-2" style="font-size: 2rem;"></i>
+                                    <span>Current Trip</span>
+                                </a>
+                            </div>
+                        {% endif %}
+                        {% if upcoming_trips.first %}
+                            <div class="col-6 col-md-3">
+                                <a href="{% url 'trip-detail' upcoming_trips.first.id %}" class="btn btn-outline-info w-100 h-100 d-flex flex-column justify-content-center align-items-center p-4">
+                                    <i class="bi bi-calendar-event mb-2" style="font-size: 2rem;"></i>
+                                    <span>Next Trip</span>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

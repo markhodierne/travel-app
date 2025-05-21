@@ -22,7 +22,7 @@ These are the prompts you can use to do so:
 > Resist the urge of being too ambitious here, remember you are aiming to finish building this and fully understand, be able to explain it by the end of the day.
 
 ```markdown
-We're going to discuss the specification for a software project. The project details are contained in `BRIEF.md` and workshop details are in `README.md`.
+We're going to discuss the specification for a software project. The project details are contained in `BRIEF.md`.
 
 Ask me one question at a time so we can develop thorough, step-by-step specs. Each question should build on my previous answers, and our end goal is to have a detailed specification I can hand off to a developer. This will be built in only a few hours so try and keep the conversation short, apply KISS principles and use logical inference based on previous answers when possible.
 
@@ -30,7 +30,7 @@ We should cover: language (ask this first), frameworks, libraries, package manag
 
 Do not wrap up until you have answers from me for each of these topics. There will be three outputs at the end: a functional spec, an architectural spec, and our code standards specification for `CLAUDE.md`, review the template for this file currently in the repo to understand what we must cover.
 
-**Important**: When asking questions about technical choices, present 2-3 specific options with brief explanations rather than leaving it open-ended. This speeds up decision-making. When there are more viable options available, verbalise this and ask if I want to see more options. Only one question at a time, stay within scope, and don't generate anything until requested.
+**Important**: When asking questions about technical choices, present 2-3 specific options with brief explanations rather than leaving it open-ended. Make sure that you recommend the simplest implementation options - I am a beginner that is not familiar with most of the tech stack, so I will need your help. This speeds up decision-making. When there are more viable options available, verbalise this and ask if I want to see more options. Only one question at a time, stay within scope, and don't generate anything until requested.
 ```
 
 ### SPEC WRAP-UP
@@ -89,6 +89,42 @@ During implementation, there are a number of prompts you can use at the start of
 
 Then refresh your memory by checking `HISTORY.md`. Review the `ARCHITECTURE.md` and `FUNCTIONAL.md` to understand what we are building.
 
+We are working through `TO-DO.md` and are on task 9.
+
+**Before implementing anything:**
+
+1. Confirm you understand the current task requirements
+2. Ask if you should reference any specific standards from `CLAUDE.md`
+3. Only implement what's specified in this task
+
+As you implement, explain:
+
+- How the code works and why it meets our `FUNCTIONAL.md` requirements
+- How it aligns with our `ARCHITECTURE.md`
+- Why it complies with our standards in `CLAUDE.md`
+
+As you implement, ask for clarification or assistance from me as required in order for implementation to be successful.
+
+Now, complete the task:
+
+### 9. Implement dashboard view
+**Description**: Create the main dashboard showing upcoming trips and weather.
+**Dependencies**: Tasks #6, #8
+**Deliverables**:
+- Dashboard view implementation
+- Dashboard template with upcoming trips
+- Weather information display
+- Quick access to create new trip
+**Definition of Done**: Dashboard displays upcoming trips and current weather information for destinations.
+
+```
+
+
+```markdown
+**First, review `CLAUDE.md` to understand our project standards and workflow.**
+
+Then refresh your memory by checking `HISTORY.md`. Review the `ARCHITECTURE.md` and `FUNCTIONAL.md` to understand what we are building.
+
 We are working through `TO-DO.md` and are on task [`TASK_NUMBER`].
 
 **Before implementing anything:**
@@ -103,8 +139,13 @@ As you implement, explain:
 - How it aligns with our `ARCHITECTURE.md`
 - Why it complies with our standards in `CLAUDE.md`
 
+As you implement, ask for clarification or assistance from me as required in order for implementation to be successful.
+
 Now, [THIS IS WHERE YOU CAN TYPE YOUR PROMPT...]
 ```
+
+
+
 
 ### DEPENDENCY CHECK
 
